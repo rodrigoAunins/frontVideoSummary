@@ -1,9 +1,15 @@
 import React from 'react';
-
-const Login = () => {
+import FormLogin from './FormLogin';
+           
+const Login = ({setUsuarioLogeado}) => {
     return (
-        <div>
-            <h1>Login</h1>
+
+        <div className='container'>
+            <div className="row d-flex justify-content-center align-items-center">
+                <div className="col-12 col-md-8 col-lg-6 ">                    
+                    <FormLogin setUsuarioLogeado={setUsuarioLogeado} />
+                </div>
+            </div>
         </div>
     );
 };

@@ -7,30 +7,41 @@ import FormSammary from './components/sammary/FormSummary';
 import Nosotros from './components/nosotros/Nosotros';
 import VersionPro from './components/pro/VersionPro';
 import Login from './components/login/Login';
+import FormLogin from './components/login/FormLogin';
+import { useState } from 'react';
+import RutasProtejidas from './components/routes/RutasProtejidas';
 
 function App() {
-  return (
-    <div className="d-flex flex-column vh-100">
-      <BrowserRouter>
-        <NavM />
-        <div className="flex-grow-1">
-          <Routes>
-            {/* Esto es para indicar la ruta principal con la / */}
-            {/* path: es la ruta */}
-            {/* element: es el elemento a mostrar */}
-            <Route path="/" element={<FormSammary />} />
-            <Route path="/nosotros" element={<Nosotros />} />
-            <Route path="/pro" element={<VersionPro />} />
-            {/* '/:' esa combinacion de caracteres indica q recibe un parametro */}
-            <Route path="/login" element={<Login />} />
-            <Route path="*" element={<Error404/>} />
-          </Routes>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur velit a facilis aspernatur, voluptates earum consequuntur provident sit quos? Esse aliquid ab autem, perferendis porro a officia repudiandae minus veritatis tempore voluptatum aspernatur eveniet iste praesentium voluptates, architecto accusamus amet harum ratione temporibus, cum nemo itaque molestias. Dolorum, minus repudiandae!
+
+    const [usuarioLogeado, setUsuarioLogeado] = useState({})
+
+    return (
+        <div className="d-flex flex-column vh-100">
+            <BrowserRouter>
+                <NavM usuarioLogeado={usuarioLogeado} setUsuarioLogeado={setUsuarioLogeado} />
+                <div className="flex-grow-1 d-flex justify-content-center align-items-center h-100">
+                    <Routes>
+                        <Route path='/*' element={
+                            <RutasProtejidas>
+                                <Routes>
+                                    {/* Esto es para indicar la ruta principal con la / */}
+                                    {/* path: es la ruta */}
+                                    {/* element: es el elemento a mostrar */}
+                                    <Route path="/" element={<FormSammary />} />
+                                    <Route path="/nosotros" element={<Nosotros />} />
+                                    <Route path="/pro" element={<VersionPro />} />
+                                </Routes>
+                            </RutasProtejidas>
+                        }></Route>
+                        {/* '/:' esa combinacion de caracteres indica q recibe un parametro */}
+                        <Route path="/login" element={<Login setUsuarioLogeado={setUsuarioLogeado} />} />
+                        <Route path="*" element={<Error404 />} />
+                    </Routes>
+                </div>
+                <Footer />
+            </BrowserRouter>
         </div>
-        <Footer />
-      </BrowserRouter>
-    </div>
-  );
+    );
 }
 
 export default App;

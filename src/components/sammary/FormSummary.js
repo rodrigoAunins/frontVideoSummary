@@ -1,35 +1,38 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, Form, Card, Alert } from 'react-bootstrap';
-import { validarUrlYoutube } from './helpers';
+import { validarUrlYoutube, getVideoId } from './helpers';
 import Spinner from './spinner/Spinner';
 
 const FormSammary = () => {
-    const [valor, setValor] = useState('')
-    const [valorVacio, setValorVacio] = useState(false)
-    const [summary, setSumamary] = useState(null)
-    const [spiner, setSpiner] = useState(false)
-    const URL = "https://localhost:7284/GetVideoSummary"
+    const [valor, setValor] = useState('');
+    const [valorVacio, setValorVacio] = useState(false);
+    const [summary, setSumamary] = useState(null);
+    const [spiner, setSpiner] = useState(false);
+    const URL = 'http://localhost:4000/getSumary/:';
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-        
 
         if (validarUrlYoutube(valor)) {
             setValorVacio(false)
+            setSumamary(null)
             setSpiner(true);
-            const URI = valor
+            const idVideo = getVideoId(valor)
             try {
-
-                const resp = await fetch(URL, {
+                const token = JSON.parse(localStorage.getItem('tokenUser'))
+                const resp = await fetch(URL + idVideo, {
                     method: 'GET',
                     headers: {
-                        "Content-Type": "application/json"
+                        'Content-type': 'application/json',
+                        'Authorization': 'Bearer'+ token
                     },
-                    body: JSON.stringify(URI)
                 })
 
-                const data=  await resp.json()
-                console.log(data)   
+                if (resp.status === 200) {
+                    const data = await resp.json()
+                    setSumamary(data.summary)
+                    setSpiner(false);                    
+                }
 
             } catch (error) {
                 console.log(error)
@@ -47,7 +50,7 @@ const FormSammary = () => {
                 <Col lg={{ span: 8, offset: 2 }} className="col-12 col-lg-8">
                     <Card style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}>
                         <Card.Header as="h4" className="text-center">
-                            Genera tu resmuen en segundos de un video de YouTube
+                            Genera tu resumen en segundos de un video de YouTube
                         </Card.Header>
                         <Card.Body className='d-flex flex-column justify-content-center'>
                             <Form onSubmit={handleFormSubmit}>
@@ -81,10 +84,9 @@ const FormSammary = () => {
                     <div className='m-5 d-flex justify-content-center text-center'>
                         {summary && (
                             <div>
-                                <h1>{summary.titulo}</h1>
                                 <h3>Resumen</h3>
-                                <p>{summary.resumen}</p>
-                                <p>Fecha de Consulta: {summary.fecha}</p>
+                                <p>{summary}</p>
+
                             </div>
                         )}
                     </div>
