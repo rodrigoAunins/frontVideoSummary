@@ -19,11 +19,12 @@ const FormSammary = () => {
             setSpiner(true);
             const idVideo = getVideoId(valor)
             try {
-                const token = JSON.parse(localStorage.getItem('tokenUser'))
+                const token = JSON.parse(localStorage.getItem('tokenUser')).token
                 const resp = await fetch(URL + idVideo, {
                     method: 'GET',
                     headers: {
                         'Content-type': 'application/json',
+                        //esta linea no estoy seguro xq
                         'Authorization': 'Bearer'+ token
                     },
                 })
